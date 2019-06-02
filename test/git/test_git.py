@@ -1,20 +1,20 @@
 #! /usr/bin/python
-
 from __future__ import print_function
 import os, sys
 import shutil
 import tarfile
 import unittest
 import tempfile
+from pkg_resources import parse_version
+from pkg_resources.extern.packaging.version import LegacyVersion
 
-
-from pkg_resources import parse_version, SetuptoolsLegacyVersion
 
 sys.path.insert(0, "src")
 import common
 from render import render
 from git import from_vcs, from_keywords
 from subprocess_helper import run_command
+
 
 class ParseGitDescribe(unittest.TestCase):
     def setUp(self):
@@ -131,6 +131,7 @@ class Keywords(unittest.TestCase):
         self.assertEqual(v["dirty"], False)
         self.assertEqual(v["error"], "no suitable tags")
 
+
 expected_renders = """
 closest-tag: 1.0
 distance: 0
@@ -216,6 +217,7 @@ git-describe-long: 250b7ca-dirty
 
 """
 
+
 class RenderPieces(unittest.TestCase):
     def do_render(self, pieces):
         out = {}
@@ -270,6 +272,7 @@ class RenderPieces(unittest.TestCase):
 
 
 VERBOSE = False
+
 
 class Repo(common.Common, unittest.TestCase):
 
@@ -590,12 +593,13 @@ class Repo(common.Common, unittest.TestCase):
     def assertPEP440(self, got, state, tree, runtime):
         where = "/".join([state, tree, runtime])
         pv = parse_version(got)
-        self.assertFalse(isinstance(pv, SetuptoolsLegacyVersion),
+        self.assertFalse(isinstance(pv, LegacyVersion),
                          "%s: '%s' was not pep440-compatible"
                          % (where, got))
         self.assertEqual(str(pv), got,
                          "%s: '%s' pep440-normalized to '%s'"
                          % (where, got, str(pv)))
+
 
 if __name__ == '__main__':
     ver, rc = run_command(common.GITS, ["--version"], ".", True)
