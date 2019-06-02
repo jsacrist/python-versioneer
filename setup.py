@@ -143,9 +143,9 @@ class LongVersionPyGitMaker(Command):
         return 0
 
 
-class MyBuildPy(build_py):
+class MyBuildPy(build_py, object):
     def __init__(self, dist):
-        super().__init__(dist)
+        super(MyBuildPy, self).__init__(dist)
         self.py_modules = None
 
     def run(self):
